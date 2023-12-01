@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Jost:wght@300&display=swap"
+      rel="stylesheet"
+    />
+
+    <meta charset="utf-8" />
+    <title>Points on a map</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link
+      href="https://api.tiles.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+
+      #map {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+      }
+
+      .button1 {
+        margin: 10px;
+        font-family: "Jost", "arial", sans-serif;
+        font-size: 15px;
+        color: black;
+        background-color: rgb(232, 215, 247);
+        opacity: 0.9;
+        padding: 13px 12px;
+        border: none;
+        border-radius: 10px;
+        position: absolute;
+        right: 0px;
+        transition: 1s;
+      }
+
+      .button1:hover {
+        background-color: grey;
+        color: white;
+      }
+
+      .fname {
+        position: absolute;
+        text-align: left;
+        margin: 12px 10px;
+        font-size: 12px;
+        line-height: 18px;
+        font-family: "Jost", "arial", sans-serif;
+        background-color: white;
+        border-radius: 10px;
+        padding: 8px 12px;
+        right: 0px;
+        top: 50px;
+        opacity: 0.9;
+      }
+
+      .mapboxgl-popup-content::first-line {
+        font-family: "jost", "arial", sans-serif;
+        font-size: 16px;
+        font-weight: 400;
+      }
+
+      .mapboxgl-popup-content {
+        font-family: "arial", sans-serif;
+        font-size: 14px;
+      }
+
+      .dot1 {
+        height: 10px;
+        width: 10px;
+        background-color: rgb(174, 244, 185);
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 5px;
+      }
+
+      .dot2 {
+        height: 10px;
+        width: 10px;
+        background-color: rgb(31, 168, 54);
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 5px;
+      }
+
+      .dot3 {
+        height: 10px;
+        width: 10px;
+        background-color: rgb(56, 237, 188);
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 5px;
+      }
+
+      /* unclassified */
+      .dot4 {
+        height: 10px;
+        width: 10px;
+        background-color: rgb(203, 190, 252);
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 5px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="map"></div>
+
+    <button class="button1" type="button" onclick="myFunction()">
+      Classification
+    </button>
+
+    <div id="classes">
+      <label class="fname">
+        <span class="dot4"> </span> Unclassified
+        <br />
+        <span class="dot1"> </span> Ia &nbspIb&nbsp II
+        <br />
+        <span class="dot2"> </span> III &nbsp IV
+        <br />
+        <span class="dot3"> </span> V &nbsp VI
+      </label>
+    </div>
+
+    <script>
+      function myFunction() {
+        var x = document.getElementById("classes");
+        if (x.style.display === "none") {
+          x.style.display = "block";
+        } else {
+          x.style.display = "none";
+        }
+      }
+
+      // The value for 'accessToken' begins with 'pk...'
+      mapboxgl.accessToken =
+        "pk.eyJ1IjoiaHVtemFoYWxpcWF6aWxiYXNoIiwiYSI6ImNsMGk5ZTF4dTAwaTAzYnNleGVhajduYnMifQ.jm76EhMy8BtuSi3vh8XxoA";
+      const map = new mapboxgl.Map({
+        container: "map",
+        // Replace YOUR_STYLE_URL with your style URL.
+        style: "mapbox://styles/humzahaliqazilbash/cl0mdu71r001d15pdmahk8qa5",
+        center: [-62.060505, -8.879896],
+        zoom: 7.4,
+      });
+
+      // Code from the next step will go here.
+
+      map.on("load", () => {
+        // When a click event occurs on a feature in the states layer,
+        // open a popup at the location of the click, with description
+        // HTML from the click event's properties.
+        map.on("click", "protected-areas-dh2xew", (e) => {
+          new mapboxgl.Popup()
+            .setLngLat(e.lngLat)
+            //.setHTML(e.features[0].properties.DESIG_ENG)
+            //.addTo(map);
+
+            //let area = GIS_AREA.toFixed(2);
+            .setHTML(
+              e.features[0].properties.DESIG_ENG +
+                "<br />" +
+                e.features[0].properties.GIS_AREA.toFixed(0) +
+                " ha"
+            )
+            .addTo(map);
+        });
+
+        map.addLayer();
+
+        // Change the cursor to a pointer when
+        // the mouse is over the states layer.
+        map.on("mouseenter", "protected-areas-dh2xew", () => {
+          map.getCanvas().style.cursor = "pointer";
+        });
+
+        // Change the cursor back to a pointer
+        // when it leaves the states layer.
+        map.on("mouseleave", "states-layer", () => {
+          map.getCanvas().style.cursor = "";
+        });
+
+        map.addLayer({
+          id: "503-pa-cie6pn",
+          type: "fill",
+          source: "503-pa-cie6pn", // reference the data source
+          layout: {},
+          paint: {
+            "fill-color": "#0080ff", // blue color fill
+            "fill-opacity": 0.5,
+          },
+        }),
+          map.addLayer({
+            id: "paa",
+            type: "fill",
+            source: "paa",
+            layout: {},
+            paint: {
+              "fill-color": "#0080ff", // blue color fill
+              "fill-opacity": 0.5,
+            },
+          });
+      });
+
+      //end
+    </script>
+  </body>
+</html>
