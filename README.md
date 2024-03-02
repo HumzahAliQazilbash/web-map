@@ -1,4 +1,4 @@
-Interactive map to show the protected areas in Brazil.  
+Interactive map made using Mapbox GL JS to show the protected areas in Brazil.  
 Click on area to see category and the area it covers.
 
 Please follow the link below:
